@@ -34,6 +34,7 @@ class PropertyConverter:
             "status": self.status,
             "title": self.title,
             "url": self.url,
+            "unique_id": self.unique_id,
         }
         self.notion_exporter = notion_exporter
 
@@ -51,6 +52,14 @@ class PropertyConverter:
         """
         checked = property_item["checkbox"]
         return f"[{'x' if checked else ' '}]"
+
+    @staticmethod
+    def unique_id(property_item: dict) -> str:
+        """
+        Converts a unique_id property to a Markdown unique_id.
+        """
+        unique_id = property_item["unique_id"]
+        return f"{property_item['unique_id']['prefix']}-{property_item['unique_id']['number']}"
 
     @staticmethod
     def created_by(property_item: dict) -> str:

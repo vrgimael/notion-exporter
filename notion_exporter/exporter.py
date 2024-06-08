@@ -26,12 +26,14 @@ class NotionExporter:
         notion_token: str,
         export_child_pages: bool = False,
         extract_page_metadata: bool = False,
+        extract_page_properties: bool = False,
         exclude_title_containing: Optional[str] = None,
     ):
         """
         :param notion_token: Notion API token.
         :param export_child_pages: Whether to export child pages. Default: True.
         :param extract_page_metadata: Whether to extract page metadata. Default: False.
+        :param extract_page_properties: Whether to extract page properties. Default: False.
         :param exclude_title_containing: If specified, pages with titles containing this string will be excluded.
 
         """
@@ -39,6 +41,7 @@ class NotionExporter:
         self.sync_notion = Client(auth=notion_token)
         self.export_child_pages = export_child_pages
         self.extract_page_metadata = extract_page_metadata
+        self.extract_page_properties = extract_page_properties
         self.exclude_title_containing = exclude_title_containing
         self.block_converter = BlockConverter()
         self.property_converter = PropertyConverter(self)
@@ -411,7 +414,7 @@ class NotionExporter:
             front_matter += "---\n\n"
 
         # Add properties of database entries as key-value pairs
-        if "properties" in page_meta:
+        if self.extract_page_properties and "properties" in page_meta:
             for prop_name, prop in page_meta["properties"].items():
                 front_matter += f"{prop_name}: {prop}\n"
             front_matter += "\n"
